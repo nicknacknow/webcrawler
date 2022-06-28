@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
 const validUrl = require('valid-url');
-const { text } = require('express');
 const app = express();
 const port = 3000;
 
@@ -117,7 +116,6 @@ async function AmazonProductDetails(link) {
   
   let productOverviewDetails = {}
   if (overviewTbody){
-    console.log("ok");
     productOverviewDetails = await page.evaluate(el => {
       let data = {};
       let tds = el.querySelector("tbody").querySelectorAll("td");
@@ -142,10 +140,10 @@ async function AmazonProductDetails(link) {
   
   let stockStatus = (await page.evaluate(el => el.textContent, availabilityElement)).trim();
   
-  console.log(stockStatus.trim());
+  console.log(stockStatus);
 
   await browser.close();
-  const data = {status: "ok", inStock: stockStatus.trim() == "In stock.", price: price, name: title};
+  const data = {status: "ok", stockStatus: stockStatus, price: price, name: title, options: optionListData, productDetails: productOverviewDetails};
   return await data;
 }
 

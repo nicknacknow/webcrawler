@@ -18,13 +18,20 @@ window.addEventListener("DOMContentLoaded", function(event){
             const data = await json;
 
             const results = document.getElementById("results");
-            let html = `<h2>${data.name}</h2>`
+            let html = "";
             
             if (data.status != "ok"){
                 html = `<h2>${data.status}</h2>`
             }
             else{
-                console.log(data.inStock);
+                html = `<h4>${data.name}</h4>
+                <style> p {padding: 0; margin: 0; line-height: 20px;} </style>
+                <p>Price: ${data.price} (${data.stockStatus})</p>
+                <p>Product Details:</p>`
+
+                for ([key, value] of Object.entries(data.productDetails)){
+                    html = html.concat(`<p style="padding-left: 50px">•  ${key} - ${value}</p>`);
+                  }
             }
             
             results.innerHTML = html;
