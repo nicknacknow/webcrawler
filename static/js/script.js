@@ -11,10 +11,24 @@ window.addEventListener("DOMContentLoaded", function(event){
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify((formData.values()))
+                body: JSON.stringify(Object.fromEntries(formData))
             });
-            const content = await response.json();
-            console.log("reply : " + content);
+            const res = await response;
+            const json = await res.json();
+            const data = await json;
+
+            const results = document.getElementById("results");
+            let html = `<h2>${data.name}</h2>`
+            
+            if (data.status != "ok"){
+                html = `<h2>${data.status}</h2>`
+            }
+            else{
+                console.log(data.inStock);
+            }
+            
+            results.innerHTML = html;
+            results.style.background = "white";
         })();
     });
 })
