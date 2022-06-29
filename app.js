@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const express = require('express');
 const validUrl = require('valid-url');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 async function AmazonProductDetails(link) {
   if (!validUrl.isUri(link)){
@@ -139,11 +139,12 @@ async function AmazonProductDetails(link) {
   let availabilityElement = await page.$("#availability span")
   
   let stockStatus = (await page.evaluate(el => el.textContent, availabilityElement)).trim();
+  const stockStatusColor = await page.evaluate(el => getComputedStyle(el).getPropertyValue("color"), availabilityElement);
   
   console.log(stockStatus);
-
+  
   await browser.close();
-  const data = {status: "ok", stockStatus: stockStatus, price: price, name: title, options: optionListData, productDetails: productOverviewDetails};
+  const data = {status: "ok", stockStatus: stockStatus, stockStatusColor: stockStatusColor, price: price, name: title, options: optionListData, productDetails: Object.entries(productOverviewDetails), landingImg: landingImageSrc};
   return await data;
 }
 
